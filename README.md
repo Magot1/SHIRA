@@ -3,68 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil de Usuario</title>
+    <title>Dino Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="profile">
-        <img src="profile_picture.jpg" alt="Foto de Perfil">
-        <h1>Nombre de Usuario</h1>
-        <p>Descripción del perfil...</p>
-        <ul>
-            <li><strong>Publicaciones:</strong> 100</li>
-            <li><strong>Seguidores:</strong> 1000</li>
-            <li><strong>Siguiendo:</strong> 500</li>
-        </ul>
+    <div id="gameContainer">
+        <div id="dino"></div>
+        <div id="obstacle"></div>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
+
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0;
+    background-color: #f5f5f5;
 }
 
-.profile {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
+#gameContainer {
+    position: relative;
+    width: 600px;
+    height: 200px;
+    margin: 100px auto;
+    border: 1px solid #ccc;
+    overflow: hidden;
 }
 
-.profile img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin-bottom: 20px;
+#dino {
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+    width: 50px;
+    height: 50px;
+    background-color: #000;
 }
 
-.profile h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
+#obstacle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 50px;
+    background-color: #000;
 }
 
-.profile p {
-    font-size: 16px;
-    color: #888;
-    margin-bottom: 20px;
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const dino = document.getElementById('dino');
+    const obstacle = document.getElementById('obstacle');
 
-.profile ul {
-    list-style-type: none;
-    padding: 0;
-}
+    function jump() {
+        if (dino.classList != 'jump') {
+            dino.classList.add('jump');
+            setTimeout(function() {
+                dino.classList.remove('jump');
+            }, 300);
+        }
+    }
 
-.profile ul li {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
+    document.addEventListener('keydown', function(event) {
+        if (event.code === 'Space') {
+            jump();
+        }
+    });
 
-.profile ul li strong {
-    font-weight: bold;
-    margin-right: 5px;
-}
+    function checkCollision() {
+        const dinoBottom = parseInt(window.getComputedStyle(dino).getPropertyValue('bottom'));
+        const obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue('left'));
+        if (obstacleLeft < 50 && obstacleLeft > 0 && dinoBottom <= 50) {
+            alert('Game Over!');
+        }
+    }
+
+    setInterval(checkCollision, 10);
+});
