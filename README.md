@@ -3,77 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dino Game</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Formulario de Recolección de Datos</title>
 </head>
 <body>
-    <div id="gameContainer">
-        <div id="dino"></div>
-        <div id="obstacle"></div>
-    </div>
-    <script src="script.js"></script>
+    <h1>Formulario de Recolección de Datos</h1>
+    <form action="process_form.php" method="post">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="email">Correo electrónico:</label>
+        <input type="email" id="email" name="email" required><br><br>
+        
+        <label for="message">Mensaje:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+        
+        <input type="submit" value="Enviar">
+    </form>
 </body>
 </html>
 
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $message = $_POST['message'];
+
+    // Guardar los datos en un archivo CSV
+    $data = array($name, $email, $message);
+    $file = fopen('data.csv', 'a');
+    fputcsv($file, $data);
+    fclose($file);
+
+    // Redirigir de vuelta al formulario o a una página de confirmación
+    header('Location: index.html');
+    exit;
 }
-
-#gameContainer {
-    position: relative;
-    width: 600px;
-    height: 200px;
-    margin: 100px auto;
-    border: 1px solid #ccc;
-    overflow: hidden;
-}
-
-#dino {
-    position: absolute;
-    bottom: 0;
-    left: 50px;
-    width: 50px;
-    height: 50px;
-    background-color: #000;
-}
-
-#obstacle {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 20px;
-    height: 50px;
-    background-color: #000;
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const dino = document.getElementById('dino');
-    const obstacle = document.getElementById('obstacle');
-
-    function jump() {
-        if (dino.classList != 'jump') {
-            dino.classList.add('jump');
-            setTimeout(function() {
-                dino.classList.remove('jump');
-            }, 300);
-        }
-    }
-
-    document.addEventListener('keydown', function(event) {
-        if (event.code === 'Space') {
-            jump();
-        }
-    });
-
-    function checkCollision() {
-        const dinoBottom = parseInt(window.getComputedStyle(dino).getPropertyValue('bottom'));
-        const obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue('left'));
-        if (obstacleLeft < 50 && obstacleLeft > 0 && dinoBottom <= 50) {
-            alert('Game Over!');
-        }
-    }
-
-    setInterval(checkCollision, 10);
-});
+?>
